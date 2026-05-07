@@ -1,0 +1,239 @@
+/* ============================================================
+   custom.css — Shane 的 PaperMod 自定义排版
+   ============================================================ */
+
+/* ---------- 1. 字体与全局色彩 ---------- */
+:root {
+    --gap: 24px;
+    --content-gap: 22px;
+    --main-width: 760px;
+    --radius: 10px;
+
+    /* 米白底，比纯白柔和 */
+    --theme: #fafaf7;
+    --entry: #ffffff;
+    --primary: #2b2b2b;
+    --secondary: #6a6a6a;
+    --tertiary: #d8d4cb;
+    --content: #2d2d2d;
+    --code-block-bg: #1f2227;
+    --code-bg: #f1efe9;
+    --border: #e8e4dc;
+
+    /* 强调色：墨绿。链接、引用条、按钮都用它 */
+    --accent: #2f6f5e;
+    --accent-soft: #e6f0ec;
+}
+
+:root[data-theme="dark"] {
+    --theme: #1b1c1f;
+    --entry: #25262a;
+    --primary: #e7e6e3;
+    --secondary: #9a9a98;
+    --tertiary: #3a3b3f;
+    --content: #d8d6d2;
+    --code-block-bg: #2a2b30;
+    --code-bg: #2f3035;
+    --border: #34353a;
+
+    --accent: #6cc1aa;
+    --accent-soft: #2a3b37;
+}
+
+body {
+    font-family: -apple-system, "PingFang SC", "Noto Sans SC",
+        "HarmonyOS Sans SC", "Microsoft YaHei", "Helvetica Neue",
+        Helvetica, Arial, sans-serif;
+    font-feature-settings: "palt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---------- 2. 正文阅读体验 ---------- */
+.post-content {
+    font-size: 17px;
+    line-height: 1.85;
+    letter-spacing: 0.01em;
+    color: var(--content);
+}
+
+.post-content p {
+    margin: 1.1em 0;
+}
+
+/* 中英混排时英文与中文之间的呼吸感 */
+.post-content p,
+.post-content li {
+    text-justify: inter-ideograph;
+}
+
+/* ---------- 3. 标题 ---------- */
+.post-content h2 {
+    margin-top: 2.4em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid var(--border);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+}
+
+.post-content h3 {
+    margin-top: 2em;
+    padding-left: 12px;
+    border-left: 3px solid var(--accent);
+    font-weight: 600;
+}
+
+.post-content h4 {
+    margin-top: 1.6em;
+    color: var(--accent);
+}
+
+/* ---------- 4. 链接 ---------- */
+.post-content a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent-soft);
+    transition: border-color 0.2s ease;
+}
+
+.post-content a:hover {
+    border-bottom-color: var(--accent);
+}
+
+/* ---------- 5. 引用块 ---------- */
+.post-content blockquote {
+    margin: 1.5em 0;
+    padding: 0.6em 1em 0.6em 1.2em;
+    border-left: 4px solid var(--accent);
+    background: var(--accent-soft);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    color: var(--content);
+}
+
+.post-content blockquote p {
+    margin: 0.4em 0;
+}
+
+/* ---------- 6. 行内代码与代码块 ---------- */
+.post-content code {
+    font-family: "JetBrains Mono", "Fira Code", "SF Mono",
+        "Menlo", monospace;
+    font-size: 0.9em;
+    padding: 0.15em 0.4em;
+    background: var(--code-bg);
+    border-radius: 4px;
+}
+
+.post-content pre {
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    padding: 14px 16px;
+}
+
+.post-content pre code {
+    background: transparent;
+    padding: 0;
+    font-size: 0.92em;
+    line-height: 1.6;
+}
+
+/* 代码行号低调一点 */
+.chroma .lnt,
+.chroma .ln {
+    color: var(--secondary);
+    opacity: 0.55;
+}
+
+/* ---------- 7. 列表 ---------- */
+.post-content ul,
+.post-content ol {
+    padding-left: 1.5em;
+}
+
+.post-content li {
+    margin: 0.4em 0;
+}
+
+.post-content li::marker {
+    color: var(--accent);
+}
+
+/* ---------- 8. 分隔线 ---------- */
+.post-content hr {
+    margin: 2.5em auto;
+    width: 60%;
+    border: 0;
+    border-top: 1px dashed var(--tertiary);
+}
+
+/* ---------- 9. 列表页文章卡片 ---------- */
+.post-entry {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.post-entry:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+.entry-header h2 {
+    font-weight: 700;
+}
+
+/* ---------- 10. profile mode 微调 ---------- */
+.profile .profile_inner h1 {
+    margin-bottom: 0.4em;
+    letter-spacing: 0.02em;
+}
+
+.profile .buttons .button {
+    border-radius: 999px;
+    padding: 6px 18px;
+    transition: all 0.2s ease;
+}
+
+.profile .buttons .button:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+
+/* ---------- 11. 顶栏 ---------- */
+.nav {
+    border-bottom: 1px solid var(--border);
+}
+
+.logo a {
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+#menu a {
+    border-radius: 6px;
+}
+
+#menu a.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
+/* ---------- 12. 表格 ---------- */
+.post-content table {
+    border-collapse: collapse;
+    margin: 1.4em 0;
+    width: 100%;
+    font-size: 0.95em;
+}
+
+.post-content th,
+.post-content td {
+    padding: 0.6em 0.8em;
+    border: 1px solid var(--border);
+}
+
+.post-content thead th {
+    background: var(--code-bg);
+    font-weight: 600;
+}

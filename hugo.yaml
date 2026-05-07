@@ -39,18 +39,43 @@ params:
   ShowPostNavLinks: true
   ShowBreadCrumbs: true
   ShowCodeCopyButtons: true
+  ShowShareButtons: true
+  ShareButtons:
+    - twitter
+    - linkedin
+    - telegram
   ShowToc: true
-  TocOpen: false
+  TocOpen: true
   ShowRssButtonInSectionTermList: true
   ShowFullTextinRSS: true
+  disableScrollToTop: false
+  comments: false
 
-  homeInfoParams:
-    Title: "你好，我是 Shane"
-    Content: "这里会记录我的学习、项目、技术实践和日常思考。"
+  mainSections:
+    - posts
+
+  profileMode:
+    enabled: true
+    title: "你好，我是 Shane"
+    subtitle: "记录学习、技术实践与日常思考"
+    imageWidth: 120
+    imageHeight: 120
+    imageTitle: "Shane"
+    buttons:
+      - name: 文章
+        url: posts
+      - name: 归档
+        url: archives
+      - name: 标签
+        url: tags
 
   socialIcons:
     - name: github
+      title: GitHub
       url: "https://github.com/shane1243"
+    - name: rss
+      title: RSS
+      url: "/index.xml"
 
 menu:
   main:
