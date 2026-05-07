@@ -10,7 +10,7 @@ categories:
 summary: "用 Hugo 和 PaperMod 搭建的新博客正式开始。"
 ---
 
-这是新博客的第一篇文章。
+这是博客的第一篇文章。
 
 这个站点使用 [Hugo](https://gohugo.io/) 生成，并使用 [PaperMod](https://github.com/adityatelange/hugo-PaperMod) 主题。后续这里会记录学习笔记、项目实践和一些日常思考。
 
