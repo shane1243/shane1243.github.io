@@ -1,0 +1,78 @@
+baseURL: "https://shane1243.github.io/"
+locale: "zh-cn"
+defaultContentLanguage: "zh"
+title: "Shane 的个人博客"
+theme: "PaperMod"
+enableRobotsTXT: true
+enableEmoji: true
+
+pagination:
+  pagerSize: 10
+
+outputs:
+  home:
+    - HTML
+    - RSS
+    - JSON
+
+minify:
+  disableXML: true
+  minifyOutput: true
+
+caches:
+  images:
+    dir: :cacheDir/images
+
+params:
+  env: production
+  title: "Shane 的个人博客"
+  description: "Shane 的个人博客，记录学习、技术、生活和思考。"
+  keywords:
+    - Blog
+    - Hugo
+    - PaperMod
+    - 个人博客
+  author: "Shane"
+  DateFormat: "2006-01-02"
+  defaultTheme: auto
+  ShowReadingTime: true
+  ShowPostNavLinks: true
+  ShowBreadCrumbs: true
+  ShowCodeCopyButtons: true
+  ShowToc: true
+  TocOpen: false
+  ShowRssButtonInSectionTermList: true
+  ShowFullTextinRSS: true
+
+  homeInfoParams:
+    Title: "你好，我是 Shane"
+    Content: "这里会记录我的学习、项目、技术实践和日常思考。"
+
+  socialIcons:
+    - name: github
+      url: "https://github.com/shane1243"
+
+menu:
+  main:
+    - identifier: posts
+      name: 文章
+      url: /posts/
+      weight: 10
+    - identifier: archives
+      name: 归档
+      url: /archives/
+      weight: 20
+    - identifier: search
+      name: 搜索
+      url: /search/
+      weight: 30
+    - identifier: about
+      name: 关于
+      url: /about/
+      weight: 40
+
+markup:
+  highlight:
+    noClasses: false
+    lineNos: true
+    lineNumbersInTable: false
