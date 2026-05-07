@@ -1,3 +1,0 @@
-User-agent: *
-Disallow:
-Sitemap: https://shane1243.github.io/sitemap.xml
