@@ -59,7 +59,7 @@ const messages = {
     exampleCaption: 'Illustration only. The data are simulated and do not represent experimental results.'
   }
 };
-let language = 'zh';
+let language = 'en';
 let hasPreference = false;
 try {
   const savedTheme = localStorage.getItem('zhiqiangqin-theme');
