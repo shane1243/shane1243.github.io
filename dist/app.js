@@ -8,55 +8,33 @@ const systemTheme = matchMedia('(prefers-color-scheme: dark)');
 const messages = {
   zh: {
     skip: '跳转到正文', home: 'zhiqiangqin 首页', navigation: '主导航',
-    about: '关于', researchNav: '研究', contact: '联系我', backHome: '返回首页',
-    notesNav: '笔记', nowTitle: '近况', updatedOn: '更新于 ',
-    nowStudy: '目前在中国科学技术大学读大四。', nowResearchLead: '研究方向：',
-    notesSummary: '论文阅读、时序分析与学习记录。',
-    notesHomeSummary: ' · 论文阅读、时序分析与学习记录。',
-    notesEmpty: '还没有公开的笔记。', viewNow: '看看我的近况',
-    notesDescription: 'zhiqiangqin 的笔记：论文阅读、时序分析与学习记录。',
-    researchDescription: 'zhiqiangqin 的研究方向与时序分析示例。',
+    writingNav: '写作', contact: '联系我',
+    writingSummary: '完整的观点、经验总结与长文。',
+    writingEmpty: '还没有公开的文章。',
+    writingDescription: 'zhiqiangqin 的写作：完整的观点、经验总结与长文。',
     greeting: '你好！我是 ', greetingEnd: '，', studentLead: '目前是',
     university: '中国科学技术大学（USTC）', studentEnd: '的大四本科生。',
     researchLead: '我的研究方向是', researchField: '时序分析', sentenceEnd: '。',
     githubProfile: 'GitHub：shane1243（在新标签页打开）',
-    contactMessage: '可以在 GitHub 找到我，或通过邮件联系。', inspired: '设计参考 ',
-    referenceLink: 'Anthony Fu 的网站，在新标签页打开',
+    contactMessage: '可以在 GitHub 找到我，或通过邮件联系。',
     languageChoice: 'EN', languageAction: '切换到英文', languageStatus: '已切换为中文。',
     lightTheme: '切换为浅色模式', darkTheme: '切换为深色模式',
     description: 'zhiqiangqin，中国科学技术大学（USTC）大四本科生，研究方向为时序分析。',
-    exampleLabel: '研究示例', exampleTitle: '时序异常检测',
-    exampleDescription: '以一段具有周期变化的模拟序列为例，标出偏离常态的两个时间点。',
-    seriesLegend: '模拟序列', anomalyLegend: '异常点', timeSteps: '时间步',
-    chartTitle: '带有两个异常点的模拟时间序列',
-    chartDescription: '60 个时间点组成的周期性模拟序列，第 20 和第 47 个时间步被标为示例异常，分别表现为突增和突降。',
-    exampleCaption: '仅为展示示例，使用模拟数据，不代表实际实验结果。'
   },
   en: {
     skip: 'Skip to content', home: 'zhiqiangqin home', navigation: 'Main navigation',
-    about: 'About', researchNav: 'Research', contact: 'Contact', backHome: 'Back to home',
-    notesNav: 'Notes', nowTitle: 'Now', updatedOn: 'Updated ',
-    nowStudy: 'Currently a senior undergraduate at USTC.', nowResearchLead: 'Research focus: ',
-    notesSummary: 'Paper reading, time series analysis, and learning notes.',
-    notesHomeSummary: ' · Paper reading, time series analysis, and learning notes.',
-    notesEmpty: 'No published notes yet.', viewNow: 'What I’m doing now',
-    notesDescription: 'Notes by zhiqiangqin: paper reading, time series analysis, and learning.',
-    researchDescription: 'Research interests and an illustrative time-series analysis example by zhiqiangqin.',
+    writingNav: 'Writing', contact: 'Contact',
+    writingSummary: 'Perspectives, lessons learned, and long-form essays.',
+    writingEmpty: 'No published articles yet.',
+    writingDescription: 'Writing by zhiqiangqin: perspectives, lessons learned, and long-form essays.',
     greeting: "Hi! I'm ", greetingEnd: '. ', studentLead: "I'm a senior undergraduate at ",
     university: 'the University of Science and Technology of China (USTC)', studentEnd: '.',
     researchLead: 'My research focuses on ', researchField: 'time series analysis', sentenceEnd: '.',
     githubProfile: 'GitHub: shane1243 (opens in a new tab)',
-    contactMessage: 'Find me on GitHub, or get in touch by email.', inspired: 'Inspired by ',
-    referenceLink: "Anthony Fu's website, opens in a new tab",
+    contactMessage: 'Find me on GitHub, or get in touch by email.',
     languageChoice: '中文', languageAction: 'Switch to Chinese', languageStatus: 'Switched to English.',
     lightTheme: 'Switch to light mode', darkTheme: 'Switch to dark mode',
     description: 'zhiqiangqin is a senior undergraduate at the University of Science and Technology of China (USTC), focusing on time series analysis.',
-    exampleLabel: 'Illustrative example', exampleTitle: 'Time-series anomaly detection',
-    exampleDescription: 'A simulated seasonal signal with two unusual observations highlighted.',
-    seriesLegend: 'Simulated signal', anomalyLegend: 'Anomalies', timeSteps: 'Time step',
-    chartTitle: 'Simulated time series with two anomalies',
-    chartDescription: 'A seasonal series of 60 simulated observations. Time steps 20 and 47 are marked as illustrative anomalies: an upward spike and a downward drop.',
-    exampleCaption: 'Illustration only. The data are simulated and do not represent experimental results.'
   }
 };
 let language = 'en';
@@ -91,7 +69,7 @@ function applyLanguage(next) {
   document.querySelectorAll('[data-i18n-title]').forEach((node) => {
     node.setAttribute('title', text[node.dataset.i18nTitle]);
   });
-  const pageDetails = { home: ['description', null], research: ['researchDescription', 'researchNav'], notes: ['notesDescription', 'notesNav'] };
+  const pageDetails = { home: ['description', null], writing: ['writingDescription', 'writingNav'] };
   const [descriptionKey, titleKey] = pageDetails[page] || pageDetails.home;
   description.setAttribute('content', text[descriptionKey]);
   document.title = titleKey ? `${text[titleKey]} · zhiqiangqin` : 'zhiqiangqin';

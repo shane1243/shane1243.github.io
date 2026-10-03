@@ -6,9 +6,8 @@ A standalone, buildless static website. The complete HTML, CSS, JavaScript, font
 
 ## Sections
 
-- Home / About: personal introduction, Now updates and contact links.
-- Research: `/research/`, including the clearly labeled simulated time-series example.
-- Notes: `/notes/`, currently with no published notes.
+- Home: personal introduction, research interests and contact links.
+- Writing: `/writing/`, for perspectives, lessons learned and long-form essays; currently no published articles.
 
 Chinese/English switching and light/dark preferences are saved in the browser. The animated background respects reduced-motion preferences.
 
