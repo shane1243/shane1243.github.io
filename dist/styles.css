@@ -101,8 +101,17 @@ strong { color: var(--strong); font-weight: 600; }
 .site-footer a:hover { color: var(--foreground); border-color: var(--line); }
 .ambient-background { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
 .ambient-background canvas { display: block; }
-.ambient-background[data-art="plum"] { mask-image: radial-gradient(circle, transparent, #000); -webkit-mask-image: radial-gradient(circle, transparent, #000); }
-[data-theme="dark"] .ambient-background[data-art="dots"] { filter: invert(1); }
+.ambient-background[data-art="contours"] {
+  mask-image: linear-gradient(90deg, #000, transparent max(24px, calc((100% - 65ch) / 2 - 24px)), transparent min(calc(100% - 24px), calc((100% + 65ch) / 2 + 24px)), #000);
+  -webkit-mask-image: linear-gradient(90deg, #000, transparent max(24px, calc((100% - 65ch) / 2 - 24px)), transparent min(calc(100% - 24px), calc((100% + 65ch) / 2 + 24px)), #000);
+}
+[data-theme="dark"] .ambient-background[data-art="contours"] { filter: brightness(1.4); }
+@media (max-width: 600px) {
+  .ambient-background[data-art="contours"] {
+    mask-image: linear-gradient(90deg, #0008, transparent 16px, transparent calc(100% - 16px), #0008);
+    -webkit-mask-image: linear-gradient(90deg, #0008, transparent 16px, transparent calc(100% - 16px), #0008);
+  }
+}
 @keyframes slide-enter { from { translate: 0 10px; opacity: 0; } to { translate: 0 0; opacity: 1; } }
 @media (prefers-reduced-motion: no-preference) {
   .js:not(.ready) [data-enter] { opacity: 0; }
