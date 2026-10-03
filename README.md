@@ -34,3 +34,5 @@ git push origin main
 ## Credits
 
 Typography, motion and background adaptations reference Anthony Fu’s website (MIT). The corresponding license is in `dist/vendor/antfu.LICENSE`. Simplex-noise and the Inter font retain their original license files in `dist/vendor/` and `dist/assets/fonts/`.
+
+The illustration in the happiness essay was generated for this site with OpenAI imagegen.

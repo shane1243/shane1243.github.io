@@ -81,6 +81,8 @@ strong { color: var(--strong); font-weight: 600; }
 .article-heading { margin: 0 0 2rem; }
 .article-heading h1 { font-size: 2.25rem; font-weight: 800; line-height: 1.1111111111; overflow-wrap: normal; line-break: strict; text-wrap: balance; }
 .article-meta { display: flex; align-items: baseline; flex-wrap: wrap; gap: .375rem; margin: .5rem 0 0; font-size: 1rem; line-height: 1.75; color: var(--foreground); opacity: .5; }
+.article-illustration { margin: 0 0 2rem; }
+.article-illustration img { display: block; width: 100%; height: auto; border-radius: .25rem; }
 .article-body { outline: none; }
 .article-body p { margin: 0 0 1.25rem; font-size: 1rem; font-weight: 400; line-height: 1.75; letter-spacing: normal; text-align: left; line-break: strict; overflow-wrap: break-word; }
 .article-body p:last-child { margin-bottom: 0; }

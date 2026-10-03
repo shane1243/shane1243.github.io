@@ -28,6 +28,9 @@
     ├── assets/fonts/
     │   ├── inter-latin.woff2      # 本地字体
     │   └── OFL.txt                # 字体许可
+    ├── assets/images/
+    │   └── happiness-quiet-moment.png
+    │                             # 幸福文章的窗边茶杯插图
     └── vendor/
         ├── antfu.LICENSE         # 已有样式和动效的来源许可
         ├── simplex-noise.js       # 保留的第三方模块，当前背景未导入它
