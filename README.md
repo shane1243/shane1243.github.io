@@ -7,9 +7,10 @@ A standalone, buildless static website. The complete HTML, CSS, JavaScript, font
 ## Sections
 
 - Home: personal introduction, research interests and contact links.
-- Writing: `/writing/`, for perspectives, lessons learned and long-form essays; currently no published articles.
+- Writing: `/writing/`, for perspectives, lessons learned and long-form essays. Includes the Chinese essay 《关于幸福的一点想法》 at `/writing/on-happiness/`.
 
 Chinese/English switching and light/dark preferences are saved in the browser. The animated background respects reduced-motion preferences.
+Article titles and text retain their original language when the interface language changes.
 
 ## Preview locally
 

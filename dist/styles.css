@@ -61,9 +61,30 @@ strong { color: var(--strong); font-weight: 600; }
 .emphasis { color: var(--strong); }
 .research { scroll-margin-top: 40px; }
 .section-divider { border: 0; border-top: 1px solid var(--line); width: 50px; margin: 48px 0; }
-.writing-description { margin-top: 0; }
-.writing-empty { margin: 32px 0; padding: 24px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.writing-empty p { margin: 0; color: var(--muted); }
+.writing-heading { margin-bottom: 3.5rem; }
+.writing-heading h1 { font-size: 1.125rem; font-weight: 400; line-height: 1.5; }
+.writing-year-group { position: relative; isolation: isolate; min-height: 10rem; padding: 2rem 0; margin-bottom: 2rem; }
+.writing-year { position: absolute; top: -3rem; left: -3rem; z-index: -1; font-size: 10rem; font-weight: 600; line-height: 1; letter-spacing: -.05em; color: transparent; -webkit-text-stroke: 4px var(--foreground); opacity: .065; pointer-events: none; user-select: none; }
+.writing-list { list-style: none; margin: 0; padding: 0; }
+.writing-item + .writing-item { margin-top: .75rem; }
+.writing-link { position: relative; display: flex; align-items: baseline; flex-wrap: wrap; gap: .25rem .75rem; width: fit-content; max-width: 100%; min-height: 44px; padding: .25rem 0; color: var(--strong); opacity: .7; transition: opacity .2s ease; }
+.writing-link:hover, .writing-link:focus-visible { opacity: 1; }
+.writing-title { font-size: 1.125rem; font-weight: 400; line-height: 1.6; }
+.writing-meta { display: inline-flex; align-items: baseline; gap: .375rem; font-size: .875rem; font-weight: 400; line-height: 1.75; white-space: nowrap; opacity: .5; }
+.writing-language { position: absolute; right: calc(100% + .75rem); top: .5rem; padding: .125rem .25rem; border-radius: 3px; color: var(--foreground); background: var(--hover); font-size: .6875rem; line-height: 1.5; white-space: nowrap; }
+:root:lang(zh-CN) .writing-language { display: none; }
+.article-column { max-width: 65ch; }
+.article-back { display: inline-flex; align-items: center; gap: .5rem; min-height: 44px; font-size: .875rem; color: var(--foreground); }
+.article-back svg { width: 1rem; height: 1rem; flex-shrink: 0; }
+.article-back span { text-decoration-thickness: 1px; text-underline-offset: .25em; }
+.article-back:hover span { text-decoration-line: underline; }
+.article-heading { margin: 0 0 2rem; }
+.article-heading h1 { font-size: 2.25rem; font-weight: 800; line-height: 1.1111111111; overflow-wrap: normal; line-break: strict; text-wrap: balance; }
+.article-meta { display: flex; align-items: baseline; flex-wrap: wrap; gap: .375rem; margin: .5rem 0 0; font-size: 1rem; line-height: 1.75; color: var(--foreground); opacity: .5; }
+.article-body { outline: none; }
+.article-body p { margin: 0 0 1.25rem; font-size: 1rem; font-weight: 400; line-height: 1.75; letter-spacing: normal; text-align: left; line-break: strict; overflow-wrap: break-word; }
+.article-body p:last-child { margin-bottom: 0; }
+.article-return { margin-top: 2rem; }
 .contact { scroll-margin-top: 40px; }
 .contact h2 { color: var(--foreground); font-size: 1rem; font-weight: 400; line-height: 1.75; margin: 0 0 20px; }
 .contact p { margin: 20px 0; }
@@ -97,11 +118,17 @@ strong { color: var(--strong); font-weight: 600; }
 [data-theme="dark"]::view-transition-old(root) { z-index: 9999; }
 [data-theme="dark"]::view-transition-new(root) { z-index: 1; }
 @media (max-width: 600px) {
+  [data-page="writing"] .page, [data-page="article"] .page { padding-left: 1.5rem; padding-right: 1.5rem; }
+  .writing-heading { margin-bottom: 3rem; }
+  .writing-year { left: -.75rem; font-size: min(8rem, 40vw); -webkit-text-stroke-width: 3px; }
+  .writing-meta { order: 2; }
+  .writing-language { position: static; order: 1; align-self: center; }
   .navigation { padding-left: 76px; padding-right: 20px; gap: .6rem; flex-wrap: wrap; height: auto; min-height: 90.5px; }
   .monogram { left: 14px; }
   .site-footer { font-size: .8125rem; }
 }
 @media (max-width: 370px) {
+  [data-page="writing"] .page, [data-page="article"] .page { padding-left: 1.25rem; padding-right: 1.25rem; }
   .navigation { padding-left: 70px; padding-right: 18px; column-gap: .25rem; row-gap: 0; font-size: .875rem; }
   .language-toggle { min-width: 28px; }
   .theme-toggle { min-width: 22px; }

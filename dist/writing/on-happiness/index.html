@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" data-page="article">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="我理解的幸福，是从心里认可自己的生活。">
+  <title>关于幸福的一点想法 · zhiqiangqin</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23171717'/%3E%3Cpath d='M18 21h28L20 43h27' fill='none' stroke='white' stroke-width='6' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <script>
+    (() => {
+      document.documentElement.classList.add('js');
+      window.setTimeout(() => document.documentElement.classList.add('ready'), 1200);
+      let theme;
+      try { theme = localStorage.getItem('zhiqiangqin-theme'); } catch {}
+      document.documentElement.dataset.theme = theme === 'light' || theme === 'dark'
+        ? theme : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    })();
+  </script>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+  <script type="module" src="/background.js"></script>
+  <noscript><style>#language-toggle,#theme-toggle{display:none}</style></noscript>
+</head>
+<body>
+  <div id="ambient-background" class="ambient-background" aria-hidden="true"><canvas id="ambient-canvas"></canvas></div>
+  <a class="skip-link" href="#article-body" data-i18n="skip">Skip to content</a>
+  <header class="site-header">
+    <a class="monogram" href="/" aria-label="zhiqiangqin home" data-i18n-label="home">zq<span>.</span></a>
+    <nav class="navigation" aria-label="Main navigation" data-i18n-label="navigation">
+      <a href="/writing/" data-i18n="writingNav" aria-current="page">Writing</a>
+      <button id="language-toggle" class="language-toggle" type="button" aria-label="Switch to Chinese" title="Switch to Chinese">中文</button>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false" title="Switch to dark mode">
+        <svg class="moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20.5 13.2A8.5 8.5 0 0 1 10.8 3.5 8.5 8.5 0 1 0 20.5 13.2Z" stroke-linejoin="round"/></svg>
+        <svg class="sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5" stroke-linecap="round"/></svg>
+      </button>
+    </nav>
+  </header>
+
+  <main class="page" id="main">
+    <div class="content-column article-column">
+      <article lang="zh-CN" aria-labelledby="article-title">
+        <header class="article-heading" data-enter style="--enter-stage:1">
+          <h1 id="article-title">关于幸福的一点想法</h1>
+          <p class="article-meta">
+            <time datetime="2026-10-03" data-post-date="full" title="Date added" data-i18n-title="dateAdded">Oct 3, 2026</time>
+            <span aria-hidden="true">·</span>
+            <span data-reading-minutes="2" title="Estimated reading time" data-i18n-title="estimatedReadingTime">2min</span>
+          </p>
+        </header>
+        <div class="article-body" id="article-body" tabindex="-1" data-enter style="--enter-stage:2">
+          <p>我理解的幸福，是从心里认可自己的生活。愿望实现时的开心，被人理解时的安心，做一件事时觉得值得，都属于这种感受。即使生活有些辛苦，只要认同自己的选择，也可能感到幸福。</p>
+          <p>我们在意幸福，大概是因为除了把日子过下去，还希望过得合乎自己的心意。时间和精力有限，想清楚什么值得投入，能帮助我们在收入、成就、健康和关系之间作出取舍。</p>
+          <p>幸福也需要一些实在的条件：身体健康，有基本的经济保障，住得安全，有时间休息。长期为生计发愁时，很难光靠想开一点改善生活。照顾身体、安排好收支，以及更完善的公共服务，都能为幸福提供支撑。</p>
+          <p>至于适合自己的生活，往往要慢慢摸索。有人喜欢创造，有人看重陪伴。留意什么使自己充实，什么让自己疲惫，再试着调整时间和目标，或许就更容易找到舒服的节奏。</p>
+          <p>我也觉得，有人可以分享喜悦、倾听难处，是很珍贵的事。平时回应彼此的关心，尊重对方的感受，都是在照顾这样的关系。学会一项技能、完成一件作品，或是帮助别人，也可能让日常多一些满足。</p>
+          <p>幸福的生活同样容得下遗憾和低落。累了可以休息，遇到困难可以寻求支持，目标失去意义时，也可以重新选择方向。我们盼着明天更好，也可以认真感受一顿饭、一次散步、一场交谈里的轻松。</p>
+        </div>
+      </article>
+      <div class="article-return" data-enter style="--enter-stage:3">
+        <a class="article-back" href="/writing/">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m12 5-7 7 7 7M5 12h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span data-i18n="backToWriting">Back to Writing</span>
+        </a>
+      </div>
+      <footer class="site-footer" data-enter style="--enter-stage:4">
+        <span>© 2026 zhiqiangqin</span>
+      </footer>
+    </div>
+  </main>
+  <p id="language-status" class="sr-only" role="status"></p>
+</body>
+</html>

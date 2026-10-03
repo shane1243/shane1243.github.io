@@ -9,8 +9,8 @@ const messages = {
   zh: {
     skip: '跳转到正文', home: 'zhiqiangqin 首页', navigation: '主导航',
     writingNav: '写作', contact: '联系我',
-    writingSummary: '完整的观点、经验总结与长文。',
-    writingEmpty: '还没有公开的文章。',
+    dateAdded: '添加日期', estimatedReadingTime: '预计阅读时长',
+    backToWriting: '返回写作',
     writingDescription: 'zhiqiangqin 的写作：完整的观点、经验总结与长文。',
     greeting: '你好！我是 ', greetingEnd: '，', studentLead: '目前是',
     university: '中国科学技术大学（USTC）', studentEnd: '的大四本科生。',
@@ -24,8 +24,8 @@ const messages = {
   en: {
     skip: 'Skip to content', home: 'zhiqiangqin home', navigation: 'Main navigation',
     writingNav: 'Writing', contact: 'Contact',
-    writingSummary: 'Perspectives, lessons learned, and long-form essays.',
-    writingEmpty: 'No published articles yet.',
+    dateAdded: 'Date added', estimatedReadingTime: 'Estimated reading time',
+    backToWriting: 'Back to Writing',
     writingDescription: 'Writing by zhiqiangqin: perspectives, lessons learned, and long-form essays.',
     greeting: "Hi! I'm ", greetingEnd: '. ', studentLead: "I'm a senior undergraduate at ",
     university: 'the University of Science and Technology of China (USTC)', studentEnd: '.',
@@ -69,10 +69,21 @@ function applyLanguage(next) {
   document.querySelectorAll('[data-i18n-title]').forEach((node) => {
     node.setAttribute('title', text[node.dataset.i18nTitle]);
   });
-  const pageDetails = { home: ['description', null], writing: ['writingDescription', 'writingNav'] };
-  const [descriptionKey, titleKey] = pageDetails[page] || pageDetails.home;
-  description.setAttribute('content', text[descriptionKey]);
-  document.title = titleKey ? `${text[titleKey]} · zhiqiangqin` : 'zhiqiangqin';
+  document.querySelectorAll('[data-post-date]').forEach((node) => {
+    node.textContent = new Intl.DateTimeFormat(language === 'zh' ? 'zh-CN' : 'en', {
+      year: node.dataset.postDate === 'full' ? 'numeric' : undefined,
+      month: 'short', day: 'numeric', timeZone: 'UTC'
+    }).format(new Date(`${node.dateTime}T00:00:00Z`));
+  });
+  document.querySelectorAll('[data-reading-minutes]').forEach((node) => {
+    node.textContent = language === 'zh' ? `约 ${node.dataset.readingMinutes} 分钟` : `${node.dataset.readingMinutes}min`;
+  });
+  if (page !== 'article') {
+    const pageDetails = { home: ['description', null], writing: ['writingDescription', 'writingNav'] };
+    const [descriptionKey, titleKey] = pageDetails[page] || pageDetails.home;
+    description.setAttribute('content', text[descriptionKey]);
+    document.title = titleKey ? `${text[titleKey]} · zhiqiangqin` : 'zhiqiangqin';
+  }
   languageToggle.textContent = text.languageChoice;
   languageToggle.setAttribute('aria-label', text.languageAction);
   languageToggle.setAttribute('title', text.languageAction);

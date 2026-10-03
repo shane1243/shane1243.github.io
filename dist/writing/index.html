@@ -40,16 +40,27 @@
 
   <main class="page" id="main" tabindex="-1">
     <div class="content-column">
-      <div class="page-heading"><h1 data-i18n="writingNav">Writing</h1></div>
-      <div class="content-flow">
-        <p class="writing-description" data-i18n="writingSummary" data-enter style="--enter-stage:1">Perspectives, lessons learned, and long-form essays.</p>
-        <div class="writing-empty" data-enter style="--enter-stage:2">
-          <p data-i18n="writingEmpty">No published articles yet.</p>
-        </div>
-    <footer class="site-footer" data-enter style="--enter-stage:3">
-      <span>© 2026 zhiqiangqin</span>
-    </footer>
-      </div>
+      <div class="page-heading writing-heading"><h1 data-i18n="writingNav">Writing</h1></div>
+      <section class="writing-year-group" aria-labelledby="writing-year-2026" data-enter style="--enter-stage:1">
+        <h2 class="sr-only" id="writing-year-2026">2026</h2>
+        <div class="writing-year" aria-hidden="true">2026</div>
+        <ul class="writing-list">
+          <li class="writing-item">
+            <a class="writing-link" href="/writing/on-happiness/">
+              <span class="writing-language" lang="zh-CN">中文</span>
+              <span class="writing-title" lang="zh-CN">关于幸福的一点想法</span>
+              <span class="writing-meta">
+                <time datetime="2026-10-03" data-post-date title="Date added" data-i18n-title="dateAdded">Oct 3</time>
+                <span aria-hidden="true">·</span>
+                <span data-reading-minutes="2" title="Estimated reading time" data-i18n-title="estimatedReadingTime">2min</span>
+              </span>
+            </a>
+          </li>
+        </ul>
+      </section>
+      <footer class="site-footer" data-enter style="--enter-stage:2">
+        <span>© 2026 zhiqiangqin</span>
+      </footer>
     </div>
   </main>
   <p id="language-status" class="sr-only" role="status"></p>
