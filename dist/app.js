@@ -8,7 +8,8 @@ const systemTheme = matchMedia('(prefers-color-scheme: dark)');
 const messages = {
   zh: {
     skip: '跳转到正文', home: 'zhiqiangqin 首页', navigation: '主导航',
-    writingNav: '写作', contact: '联系我',
+    writingNav: '写作', contact: '联系方式',
+    latestWriting: '最新文章', allWriting: '全部文章', email: '邮箱',
     dateAdded: '添加日期', estimatedReadingTime: '预计阅读时长',
     backToWriting: '返回写作',
     writingDescription: 'zhiqiangqin 的写作：完整的观点、经验总结与长文。',
@@ -16,7 +17,6 @@ const messages = {
     university: '中国科学技术大学（USTC）', studentEnd: '的大四本科生。',
     researchLead: '我的研究方向是', researchField: '时序分析', sentenceEnd: '。',
     githubProfile: 'GitHub：shane1243（在新标签页打开）',
-    contactMessage: '可以在 GitHub 找到我，或通过邮件联系。',
     languageChoice: 'EN', languageAction: '切换到英文', languageStatus: '已切换为中文。',
     lightTheme: '切换为浅色模式', darkTheme: '切换为深色模式',
     description: 'zhiqiangqin，中国科学技术大学（USTC）大四本科生，研究方向为时序分析。',
@@ -24,6 +24,7 @@ const messages = {
   en: {
     skip: 'Skip to content', home: 'zhiqiangqin home', navigation: 'Main navigation',
     writingNav: 'Writing', contact: 'Contact',
+    latestWriting: 'Latest writing', allWriting: 'All writing', email: 'Email',
     dateAdded: 'Date added', estimatedReadingTime: 'Estimated reading time',
     backToWriting: 'Back to Writing',
     writingDescription: 'Writing by zhiqiangqin: perspectives, lessons learned, and long-form essays.',
@@ -31,7 +32,6 @@ const messages = {
     university: 'the University of Science and Technology of China (USTC)', studentEnd: '.',
     researchLead: 'My research focuses on ', researchField: 'time series analysis', sentenceEnd: '.',
     githubProfile: 'GitHub: shane1243 (opens in a new tab)',
-    contactMessage: 'Find me on GitHub, or get in touch by email.',
     languageChoice: '中文', languageAction: 'Switch to Chinese', languageStatus: 'Switched to English.',
     lightTheme: 'Switch to light mode', darkTheme: 'Switch to dark mode',
     description: 'zhiqiangqin is a senior undergraduate at the University of Science and Technology of China (USTC), focusing on time series analysis.',

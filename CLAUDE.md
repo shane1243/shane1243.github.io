@@ -17,14 +17,14 @@
 │                                 # main 推送或手动触发，发布 dist/
 ├── .planning/                    # 历史计划、发现与执行记录
 └── dist/
-    ├── index.html                # /：个人介绍、研究方向、联系方式
+    ├── index.html                # /：个人介绍、研究方向、最新文章、联系方式
     ├── writing/
     │   ├── index.html            # /writing/：按年份组织的文章列表
     │   └── on-happiness/index.html
     │                             # /writing/on-happiness/：现有中文文章
     ├── app.js                    # 界面翻译、元信息、日期、语言和主题切换
     ├── styles.css                # 全站样式、响应式布局、主题与入场动画
-    ├── background.js             # Canvas 等高线背景与动画生命周期
+    ├── background.js             # Canvas 时间序列波形背景与动画生命周期
     ├── assets/fonts/
     │   ├── inter-latin.woff2      # 本地字体
     │   └── OFL.txt                # 字体许可
@@ -34,7 +34,7 @@
     │                             # 幸福文章的窗边茶杯插图（原图与窄屏版本）
     └── vendor/
         ├── antfu.LICENSE         # 已有样式和动效的来源许可
-        ├── simplex-noise.js       # 保留的第三方模块，当前背景未导入它
+        ├── simplex-noise.js       # 第三方噪声模块，background.js 用它生成波形
         └── simplex-noise.LICENSE
 ```
 
@@ -76,14 +76,14 @@ git diff --check
 - 文章标题、正文和摘要保持文章原语言，不随界面语言翻译。保留文章及列表标题的 `lang`；`data-page="article"` 会保留 HTML 中的文档标题和 description。
 - 浏览器偏好键是 `zhiqiangqin-language`（`zh` / `en`）和 `zhiqiangqin-theme`（`light` / `dark`）。默认界面为英文；未保存主题时跟随系统。保留存储不可用时的容错，以及各 HTML 中用于避免主题闪烁的初始化逻辑。
 - 保留跳转正文、目标的 `tabindex="-1"`、按钮标签、`aria-pressed`、语言状态播报和 Writing 区域的 `aria-current="page"`。禁用 JavaScript 时正文和链接仍应可用，切换按钮由 `noscript` 隐藏。
-- 保留减少动态效果偏好与不支持 View Transition 时的主题切换回退。背景在页面隐藏时暂停，减少动态效果时静态绘制；调整动画不能破坏这些行为。增删入场区块后连续调整 `--enter-stage`。
+- 保留减少动态效果偏好与不支持 View Transition 时的主题切换回退。背景在页面隐藏时暂停，减少动态效果时静态绘制，窄屏只在底部显示一条淡波形带，颜色取自 `--ambient-line` 并随主题重绘；调整动画不能破坏这些行为。增删入场区块后连续调整 `--enter-stage`。
 - 保留第三方许可、来源注释及 README Credits；修改站点展示文字不等于删除来源文件。个人资料、联系方式与文章内容以用户提供的信息为准，不自行编造。
 
 ## 新增或修改文章
 
 1. 参考 `dist/writing/on-happiness/index.html`，在 `dist/writing/<slug>/index.html` 创建页面，使用小写连字符 slug，并保留共享结构及 `data-page="article"`。
 2. 更新 `<title>`、description、`article[lang]`、文章标题和正文；保持 `aria-labelledby`、跳转正文链接及目标 ID 对应，返回链接指向 `/writing/`。
-3. 在 `dist/writing/index.html` 的对应年份分组中手动添加列表项；没有年份分组时按现有结构新增，并使用唯一的标题 ID。列表不会自动扫描文章目录。
+3. 在 `dist/writing/index.html` 的对应年份分组中手动添加列表项，并同步首页 `#latest-writing` 中的最新文章；没有年份分组时按现有结构新增，并使用唯一的标题 ID。列表不会自动扫描文章目录。
 4. 列表和文章页同步维护 `<time datetime="YYYY-MM-DD">` 与 `data-reading-minutes`。日期表示添加日期；列表用 `data-post-date`，文章页用 `data-post-date="full"`。日期格式和阅读时长文案由脚本本地化，阅读分钟数需要手动填写。
 5. 核对列表链接、原文语言标记、返回 Writing 和新增页面的直接访问；涉及站点结构、预览或发布方式的变化时同步 `README.md` 与本指南。
 
