@@ -1,341 +1,49 @@
-// Ambient background art for the page margins. Plum growth adapted from antfu.me (MIT), vendor/antfu.LICENSE.
-import { createNoise3D } from './vendor/simplex-noise.js';
-
+// Static graph-paper grid in the page margins, aligned to the text column.
 const holder = document.getElementById('ambient-background');
 const canvas = document.getElementById('ambient-canvas');
 const ctx = canvas.getContext('2d');
 const root = document.documentElement;
-const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-// Matches the styles.css breakpoint for narrow screens.
-const narrowScreen = matchMedia('(max-width: 600px)');
-const artName = new URLSearchParams(location.search).get('bg') || 'plum';
-holder.dataset.art = artName;
+holder.dataset.art = 'graph';
 
-// Deterministic seed so every visit draws the same composition.
-function mulberry32(seed) {
-  return () => {
-    seed |= 0; seed = seed + 0x6d2b79f5 | 0;
-    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
-    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
-  };
-}
-const noise = createNoise3D(mulberry32(20261003));
-
-let width = 0;
-let height = 0;
-let frameId = 0;
-let lastFrame = 0;
+const cell = 16;
+const majorEvery = 5;
 let resizeTimer = 0;
-let lineColor = '#8885';
 
-// Regions left free by the text column; the CSS mask softens their inner edges.
-function regions() {
-  if (narrowScreen.matches) return [[0, width]];
-  const column = document.querySelector('.content-column');
-  const box = column ? column.getBoundingClientRect() : { left: width / 2, right: width / 2 };
-  return [[0, Math.max(0, box.left - 8)], [Math.min(width, box.right + 8), width]]
-    .filter(([from, to]) => to - from > 48);
-}
-
-// Branches grow from the viewport edges, split at small random angles, then stop.
-const plum = (() => {
-  const length = 6;
-  const spread = Math.PI / 12;
-  let random;
-  let segments = [];
-  let pending = [];
-  let drawn = 0;
-  return {
-    fps: 40,
-    reset() {
-      random = mulberry32(1243);
-      segments = [];
-      drawn = 0;
-      const middle = () => random() * .6 + .2;
-      pending = [
-        [middle() * width, -5, Math.PI / 2], [middle() * width, height + 5, -Math.PI / 2],
-        [-5, middle() * height, 0], [width + 5, middle() * height, Math.PI],
-      ].map(([x, y, angle]) => ({ x, y, angle, counter: { value: 0 } }));
-      if (reducedMotion.matches) while (pending.length) this.grow();
-    },
-    grow() {
-      const next = [];
-      for (const { x, y, angle, counter } of pending) {
-        const nx = x + Math.cos(angle) * length;
-        const ny = y + Math.sin(angle) * length;
-        segments.push([x, y, nx, ny]);
-        counter.value++;
-        if (nx < -100 || nx > width + 100 || ny < -100 || ny > height + 100) continue;
-        const rate = counter.value <= 30 ? .8 : .5;
-        if (random() < rate) next.push({ x: nx, y: ny, angle: angle + random() * spread, counter });
-        if (random() < rate) next.push({ x: nx, y: ny, angle: angle - random() * spread, counter });
-      }
-      pending = next;
-    },
-    get done() { return !pending.length && drawn === segments.length; },
-    draw(full) {
-      if (full) { ctx.clearRect(0, 0, width, height); drawn = 0; }
-      else this.grow();
-      ctx.strokeStyle = lineColor;
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      for (; drawn < segments.length; drawn++) {
-        const [x, y, nx, ny] = segments[drawn];
-        ctx.moveTo(x, y);
-        ctx.lineTo(nx, ny);
-      }
-      ctx.stroke();
-    },
-  };
-})();
-
-// A grid of dots whose size breathes with a slowly drifting noise field.
-const dots = {
-  fps: 15,
-  done: false,
-  reset() {},
-  draw(full, time = 0) {
-    ctx.clearRect(0, 0, width, height);
-    ctx.fillStyle = lineColor;
-    const spacing = 18;
-    const z = reducedMotion.matches ? 0 : time / 9000;
-    ctx.beginPath();
-    for (const [from, to] of regions()) {
-      for (let x = Math.ceil(from / spacing) * spacing; x < to; x += spacing) {
-        for (let y = spacing; y < height; y += spacing) {
-          const radius = .5 + Math.max(0, noise(x / 340, y / 340, z)) * 1.6;
-          ctx.moveTo(x + radius, y);
-          ctx.arc(x, y, radius, 0, Math.PI * 2);
-        }
-      }
-    }
-    ctx.fill();
-  },
-};
-
-// Topographic contours: marching squares over a slowly drifting noise field.
-const contours = {
-  fps: 10,
-  done: false,
-  reset() {},
-  draw(full, time = 0) {
-    ctx.clearRect(0, 0, width, height);
-    ctx.strokeStyle = lineColor;
-    ctx.lineWidth = .9;
-    const cell = 10;
-    const z = reducedMotion.matches ? 0 : time / 40000;
-    const field = (x, y) => noise(x / 420, y / 420, z) * .75 + noise(x / 160, y / 160, z + 9) * .25;
-    ctx.beginPath();
-    for (const [from, to] of regions()) {
-      const cols = Math.ceil((to - from) / cell) + 1;
-      const rows = Math.ceil(height / cell) + 1;
-      const values = new Float32Array(cols * rows);
-      for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) values[j * cols + i] = field(from + i * cell, j * cell);
-      for (let level = -.7; level <= .71; level += .14) {
-        for (let j = 0; j < rows - 1; j++) {
-          for (let i = 0; i < cols - 1; i++) {
-            const a = values[j * cols + i], b = values[j * cols + i + 1];
-            const c = values[(j + 1) * cols + i + 1], d = values[(j + 1) * cols + i];
-            const x = from + i * cell, y = j * cell;
-            const points = [];
-            if ((a < level) !== (b < level)) points.push([x + (level - a) / (b - a) * cell, y]);
-            if ((b < level) !== (c < level)) points.push([x + cell, y + (level - b) / (c - b) * cell]);
-            if ((d < level) !== (c < level)) points.push([x + (level - d) / (c - d) * cell, y + cell]);
-            if ((a < level) !== (d < level)) points.push([x, y + (level - a) / (d - a) * cell]);
-            for (let k = 0; k + 1 < points.length; k += 2) {
-              ctx.moveTo(points[k][0], points[k][1]);
-              ctx.lineTo(points[k + 1][0], points[k + 1][1]);
-            }
-          }
-        }
-      }
-    }
-    ctx.stroke();
-  },
-};
-
-// Streamlines traced through a slowly turning noise flow field.
-const flow = (() => {
-  let seeds = [];
-  return {
-    fps: 8,
-    done: false,
-    reset() {
-      const random = mulberry32(77);
-      seeds = Array.from({ length: Math.round(width * height / 3600) }, () => [random() * width, random() * height]);
-    },
-    draw(full, time = 0) {
-      ctx.clearRect(0, 0, width, height);
-      ctx.strokeStyle = lineColor;
-      ctx.lineWidth = .8;
-      const z = reducedMotion.matches ? 0 : time / 60000;
-      ctx.beginPath();
-      for (let [x, y] of seeds) {
-        ctx.moveTo(x, y);
-        for (let step = 0; step < 40; step++) {
-          const angle = noise(x / 380, y / 380, z) * Math.PI * 2;
-          x += Math.cos(angle) * 3;
-          y += Math.sin(angle) * 3;
-          ctx.lineTo(x, y);
-        }
-      }
-      ctx.stroke();
-    },
-  };
-})();
-
-// Drifting points joined by faint lines when they come close.
-const constellation = (() => {
-  let points = [];
-  const reach = 120;
-  return {
-    fps: 30,
-    done: false,
-    reset() {
-      const random = mulberry32(5);
-      points = Array.from({ length: Math.round(width * height / 9000) }, () => ({
-        x: random() * width, y: random() * height, vx: (random() - .5) * .25, vy: (random() - .5) * .25,
-      }));
-    },
-    draw(full) {
-      ctx.clearRect(0, 0, width, height);
-      if (!full && !reducedMotion.matches) {
-        for (const point of points) {
-          point.x = (point.x + point.vx + width) % width;
-          point.y = (point.y + point.vy + height) % height;
-        }
-      }
-      ctx.strokeStyle = lineColor;
-      ctx.fillStyle = lineColor;
-      ctx.lineWidth = .8;
-      for (let i = 0; i < points.length; i++) {
-        const a = points[i];
-        for (let j = i + 1; j < points.length; j++) {
-          const b = points[j];
-          const distance = Math.hypot(a.x - b.x, a.y - b.y);
-          if (distance > reach) continue;
-          ctx.globalAlpha = 1 - distance / reach;
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.stroke();
-        }
-      }
-      ctx.globalAlpha = 1;
-      ctx.beginPath();
-      for (const { x, y } of points) {
-        ctx.moveTo(x + 1.4, y);
-        ctx.arc(x, y, 1.4, 0, Math.PI * 2);
-      }
-      ctx.fill();
-    },
-  };
-})();
-
-// Static engineering graph paper: minor and major grid lines.
-const graph = {
-  fps: 1,
-  done: true,
-  reset() {},
-  draw() {
-    ctx.clearRect(0, 0, width, height);
-    ctx.strokeStyle = lineColor;
-    const cell = 16;
-    for (const [major, alpha, widthPx] of [[false, .45, .6], [true, 1, .8]]) {
-      ctx.globalAlpha = alpha;
-      ctx.lineWidth = widthPx;
-      ctx.beginPath();
-      for (let x = 0; x <= width; x += cell) {
-        if ((Math.round(x / cell) % 5 === 0) !== major) continue;
-        ctx.moveTo(Math.round(x) + .5, 0);
-        ctx.lineTo(Math.round(x) + .5, height);
-      }
-      for (let y = 0; y <= height; y += cell) {
-        if ((Math.round(y / cell) % 5 === 0) !== major) continue;
-        ctx.moveTo(0, Math.round(y) + .5);
-        ctx.lineTo(width, Math.round(y) + .5);
-      }
-      ctx.stroke();
-    }
-    ctx.globalAlpha = 1;
-  },
-};
-
-// Soft tinted glows drifting slowly behind the page.
-const aurora = {
-  fps: 15,
-  done: false,
-  reset() {},
-  draw(full, time = 0) {
-    ctx.clearRect(0, 0, width, height);
-    const dark = root.dataset.theme === 'dark';
-    const t = reducedMotion.matches ? 0 : time / 14000;
-    const size = Math.max(width, height);
-    const blobs = [
-      [.12, .25, [120, 170, 140]], [.88, .2, [130, 150, 210]],
-      [.8, .85, [190, 160, 210]], [.18, .8, [210, 190, 140]],
-    ];
-    blobs.forEach(([bx, by, [r, g, b]], index) => {
-      const x = (bx + Math.sin(t + index * 1.7) * .06) * width;
-      const y = (by + Math.cos(t * .8 + index * 2.3) * .06) * height;
-      const radius = size * .38;
-      const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
-      gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${dark ? .16 : .22})`);
-      gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, width, height);
-    });
-  },
-};
-
-const art = { plum, dots, contours, flow, constellation, graph, aurora }[artName] || plum;
-
-function frame(now) {
-  frameId = 0;
-  if (document.hidden || reducedMotion.matches || art.done) return;
-  if (now - lastFrame >= 1000 / art.fps) {
-    lastFrame = now;
-    art.draw(false, now);
-  }
-  frameId = requestAnimationFrame(frame);
-}
-
-function resume() {
-  if (!frameId && !document.hidden && !reducedMotion.matches && !art.done) frameId = requestAnimationFrame(frame);
-}
-
-function readColor() {
-  lineColor = getComputedStyle(root).getPropertyValue('--ambient-line').trim() || lineColor;
-}
-
-function resize() {
-  cancelAnimationFrame(frameId);
-  frameId = 0;
-  width = innerWidth;
-  height = innerHeight;
+function draw() {
+  const width = innerWidth;
+  const height = innerHeight;
   const dpr = Math.min(devicePixelRatio || 1, 2);
   canvas.width = Math.round(width * dpr);
   canvas.height = Math.round(height * dpr);
   canvas.style.width = width + 'px';
   canvas.style.height = height + 'px';
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  readColor();
-  art.reset();
-  art.draw(true, lastFrame);
-  resume();
+  ctx.clearRect(0, 0, width, height);
+  ctx.strokeStyle = getComputedStyle(root).getPropertyValue('--ambient-line').trim() || '#8884';
+  // Start a major line on the column's left edge so the grid frames the text.
+  const column = document.querySelector('.content-column');
+  const originX = column ? column.getBoundingClientRect().left % (cell * majorEvery) : 0;
+  const pixel = .5 / dpr;
+  for (const [major, alpha, lineWidth] of [[false, .45, .6], [true, 1, .8]]) {
+    ctx.globalAlpha = alpha;
+    ctx.lineWidth = lineWidth;
+    ctx.beginPath();
+    for (let index = 0, x = originX - cell * majorEvery; x <= width; index++, x += cell) {
+      if ((index % majorEvery === 0) !== major) continue;
+      ctx.moveTo(Math.round(x) + pixel, 0);
+      ctx.lineTo(Math.round(x) + pixel, height);
+    }
+    for (let index = 0, y = 0; y <= height; index++, y += cell) {
+      if ((index % majorEvery === 0) !== major) continue;
+      ctx.moveTo(0, Math.round(y) + pixel);
+      ctx.lineTo(width, Math.round(y) + pixel);
+    }
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
 }
 
-resize();
-addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(resize, 120); });
-document.addEventListener('visibilitychange', () => {
-  if (document.hidden) { cancelAnimationFrame(frameId); frameId = 0; }
-  else resume();
-});
+draw();
+addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(draw, 120); });
 // Redraw with the new palette whenever the theme changes.
-new MutationObserver(() => { readColor(); art.draw(true, lastFrame); })
-  .observe(root, { attributes: true, attributeFilter: ['data-theme'] });
-reducedMotion.addEventListener('change', resize);
-narrowScreen.addEventListener('change', resize);
-addEventListener('pagehide', () => { cancelAnimationFrame(frameId); clearTimeout(resizeTimer); });
-addEventListener('pageshow', resume);
+new MutationObserver(draw).observe(root, { attributes: true, attributeFilter: ['data-theme'] });

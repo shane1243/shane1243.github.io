@@ -9,7 +9,7 @@ A standalone, buildless static website. The complete HTML, CSS, JavaScript, font
 - Home: personal introduction, research interests, latest writing and contact links.
 - Writing: `/writing/`, for perspectives, lessons learned and long-form essays. Includes the Chinese essay 《关于幸福的一点想法》 at `/writing/on-happiness/`.
 
-Chinese/English switching and light/dark preferences are saved in the browser. The background draws generative art in the page margins (faded around the edges on narrow screens) and respects reduced-motion preferences.
+Chinese/English switching and light/dark preferences are saved in the browser. The background draws a static graph-paper grid in the page margins (faded around the edges on narrow screens) and respects reduced-motion preferences.
 Article titles and text retain their original language when the interface language changes.
 
 ## Preview locally

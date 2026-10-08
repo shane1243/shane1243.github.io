@@ -24,7 +24,7 @@
     │                             # /writing/on-happiness/：现有中文文章
     ├── app.js                    # 界面翻译、元信息、日期、语言和主题切换
     ├── styles.css                # 全站样式、响应式布局、主题与入场动画
-    ├── background.js             # Canvas 环境背景（多种候选，待选定）与动画生命周期
+    ├── background.js             # Canvas 坐标纸网格背景（静态，随主题和尺寸重绘）
     ├── assets/fonts/
     │   ├── inter-latin.woff2      # 本地字体
     │   └── OFL.txt                # 字体许可
@@ -34,7 +34,7 @@
     │                             # 幸福文章的窗边茶杯插图（原图与窄屏版本）
     └── vendor/
         ├── antfu.LICENSE         # 已有样式和动效的来源许可
-        ├── simplex-noise.js       # 第三方噪声模块，background.js 用它生成噪声图案
+        ├── simplex-noise.js       # 保留的第三方模块，当前背景未导入它
         └── simplex-noise.LICENSE
 ```
 
@@ -76,7 +76,7 @@ git diff --check
 - 文章标题、正文和摘要保持文章原语言，不随界面语言翻译。保留文章及列表标题的 `lang`；`data-page="article"` 会保留 HTML 中的文档标题和 description。
 - 浏览器偏好键是 `zhiqiangqin-language`（`zh` / `en`）和 `zhiqiangqin-theme`（`light` / `dark`）。默认界面为英文；未保存主题时跟随系统。保留存储不可用时的容错，以及各 HTML 中用于避免主题闪烁的初始化逻辑。
 - 保留跳转正文、目标的 `tabindex="-1"`、按钮标签、`aria-pressed`、语言状态播报和 Writing 区域的 `aria-current="page"`。禁用 JavaScript 时正文和链接仍应可用，切换按钮由 `noscript` 隐藏。
-- 保留减少动态效果偏好与不支持 View Transition 时的主题切换回退。背景在页面隐藏时暂停，减少动态效果时静态绘制，窄屏只在四周淡淡显示，颜色取自 `--ambient-line` 并随主题重绘；调整动画不能破坏这些行为。增删入场区块后连续调整 `--enter-stage`。
+- 保留减少动态效果偏好与不支持 View Transition 时的主题切换回退。背景是静态坐标纸网格，主线对齐正文列左缘，颜色取自 `--ambient-line` 并在主题切换和窗口缩放时重绘，正文列区域由遮罩留白，窄屏只在四周淡淡显示；若改回动画背景，需在页面隐藏时暂停并在减少动态效果时静态绘制。增删入场区块后连续调整 `--enter-stage`。
 - 保留第三方许可、来源注释及 README Credits；修改站点展示文字不等于删除来源文件。个人资料、联系方式与文章内容以用户提供的信息为准，不自行编造。
 
 ## 新增或修改文章

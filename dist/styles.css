@@ -116,7 +116,6 @@ strong { color: var(--strong); font-weight: 600; }
 @media (max-width: 600px) {
   .ambient-background[data-art] { opacity: .7; mask-image: radial-gradient(ellipse at center, transparent 45%, #000 100%); -webkit-mask-image: radial-gradient(ellipse at center, transparent 45%, #000 100%); }
 }
-.ambient-background[data-art="aurora"] { opacity: 1; mask-image: none; -webkit-mask-image: none; }
 @keyframes slide-enter { from { translate: 0 10px; opacity: 0; } to { translate: 0 0; opacity: 1; } }
 @media (prefers-reduced-motion: no-preference) {
   .js:not(.ready) [data-enter] { opacity: 0; }
