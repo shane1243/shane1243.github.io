@@ -12,7 +12,7 @@
   --selection: #8884;
   --scrollbar: #eee;
   --scrollbar-hover: #bbb;
-  --ambient-line: #8a917a66;
+  --ambient-line: #88888840;
   --highlight: #dfe6cfb3;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   line-height: 1.5;
@@ -20,7 +20,7 @@
   background: var(--background);
   color: var(--foreground);
 }
-:root[data-theme="dark"] { color-scheme: dark; --background: #050505; --heading: #fff; --strong: #ddd; --foreground: #bbb; --muted: #888; --scrollbar: #111; --scrollbar-hover: #222; --ambient-line: #7d856d73; --highlight: #4a523a80; }
+:root[data-theme="dark"] { color-scheme: dark; --background: #050505; --heading: #fff; --strong: #ddd; --foreground: #bbb; --muted: #888; --scrollbar: #111; --scrollbar-hover: #222; --ambient-line: #8888884d; --highlight: #4a523a80; }
 * { box-sizing: border-box; }
 * { scrollbar-color: var(--scrollbar) var(--background); }
 ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -109,12 +109,12 @@ strong { color: var(--strong); font-weight: 600; }
 .footer-links a { display: inline-flex; align-items: center; gap: .35rem; transition: color .2s ease; }
 .footer-links a:hover { color: var(--heading); }
 .nav-icon { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; min-height: 44px; }
-.ambient-background[data-art="signals"] {
+.ambient-background[data-art] {
   mask-image: linear-gradient(90deg, #000, transparent max(24px, calc((100% - 65ch) / 2 - 24px)), transparent min(calc(100% - 24px), calc((100% + 65ch) / 2 + 24px)), #000);
   -webkit-mask-image: linear-gradient(90deg, #000, transparent max(24px, calc((100% - 65ch) / 2 - 24px)), transparent min(calc(100% - 24px), calc((100% + 65ch) / 2 + 24px)), #000);
 }
 @media (max-width: 600px) {
-  .ambient-background[data-art="signals"] { opacity: .55; mask-image: linear-gradient(to top, #000 24px, transparent 100px); -webkit-mask-image: linear-gradient(to top, #000 24px, transparent 100px); }
+  .ambient-background[data-art] { opacity: .7; mask-image: radial-gradient(ellipse at center, transparent 45%, #000 100%); -webkit-mask-image: radial-gradient(ellipse at center, transparent 45%, #000 100%); }
 }
 @keyframes slide-enter { from { translate: 0 10px; opacity: 0; } to { translate: 0 0; opacity: 1; } }
 @media (prefers-reduced-motion: no-preference) {

@@ -1,14 +1,15 @@
-// Stacked time-series waveforms: noise-driven signals drift slowly leftwards in the page margins.
-import { createNoise2D } from './vendor/simplex-noise.js';
+// Ambient background art for the page margins. Plum growth adapted from antfu.me (MIT), vendor/antfu.LICENSE.
+import { createNoise3D } from './vendor/simplex-noise.js';
 
 const holder = document.getElementById('ambient-background');
 const canvas = document.getElementById('ambient-canvas');
 const ctx = canvas.getContext('2d');
 const root = document.documentElement;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-// Matches the styles.css breakpoint that turns the background into a bottom band.
+// Matches the styles.css breakpoint for narrow screens.
 const narrowScreen = matchMedia('(max-width: 600px)');
-holder.dataset.art = 'signals';
+const artName = new URLSearchParams(location.search).get('bg') || 'plum';
+holder.dataset.art = artName;
 
 // Deterministic seed so every visit draws the same composition.
 function mulberry32(seed) {
@@ -19,22 +20,14 @@ function mulberry32(seed) {
     return ((t ^ t >>> 14) >>> 0) / 4294967296;
   };
 }
-const noise = createNoise2D(mulberry32(20261003));
+const noise = createNoise3D(mulberry32(20261003));
 
 let width = 0;
 let height = 0;
 let frameId = 0;
 let lastFrame = 0;
 let resizeTimer = 0;
-let colors = { line: '#8885', fill: '#fff' };
-
-function readColors() {
-  const style = getComputedStyle(root);
-  colors = {
-    line: style.getPropertyValue('--ambient-line').trim() || colors.line,
-    fill: style.getPropertyValue('--background').trim() || colors.fill,
-  };
-}
+let lineColor = '#8885';
 
 // Regions left free by the text column; the CSS mask softens their inner edges.
 function regions() {
@@ -45,68 +38,141 @@ function regions() {
     .filter(([from, to]) => to - from > 48);
 }
 
-function signal(x, row, shift) {
-  const t = (x + shift) / 260;
-  const base = noise(t, row * .37) * .55 + noise(t * 3.1, row * .37 + 40) * .2;
-  // Sparse "events": smooth bursts that make each line read like a measured series.
-  const burst = Math.max(0, noise(t * .35, row * .21 + 90)) ** 2 * 3.4;
-  return base * (.3 + burst);
-}
-
-function draw(time = 0) {
-  ctx.clearRect(0, 0, width, height);
-  const gap = narrowScreen.matches ? 14 : 20;
-  const amplitude = gap * 1.9;
-  // Keep the header row clear on wide screens; the narrow-screen band sits at the bottom.
-  const top = narrowScreen.matches ? height - 100 : 120;
-  const rows = Math.floor((height - top) / gap);
-  const shift = reducedMotion.matches ? 0 : time * .012;
-  const step = 4;
-  ctx.lineWidth = .8;
-  ctx.lineJoin = 'round';
-  ctx.strokeStyle = colors.line;
-  ctx.fillStyle = colors.fill;
-  const centre = width / 2;
-  for (const [from, to] of regions()) {
-    // Top to bottom, so each row occludes the peaks of the rows behind it.
-    for (let row = 0; row < rows; row++) {
-      const y0 = top + row * gap;
-      ctx.beginPath();
-      ctx.moveTo(from, y0);
-      const ys = [];
-      for (let x = from; x <= to + step; x += step) {
-        // Signals grow calmer towards the text column and livelier towards the edges.
-        const envelope = narrowScreen.matches ? .8 : .45 + .75 * Math.min(1, Math.abs(x - centre) / centre) ** 1.5;
-        const y = y0 - Math.max(-.25, signal(x, row, shift)) * amplitude * envelope;
-        ys.push(y);
-        ctx.lineTo(x, y);
+// Branches grow from the viewport edges, split at small random angles, then stop.
+const plum = (() => {
+  const length = 6;
+  const spread = Math.PI / 12;
+  let random;
+  let segments = [];
+  let pending = [];
+  let drawn = 0;
+  return {
+    fps: 40,
+    reset() {
+      random = mulberry32(1243);
+      segments = [];
+      drawn = 0;
+      const middle = () => random() * .6 + .2;
+      pending = [
+        [middle() * width, -5, Math.PI / 2], [middle() * width, height + 5, -Math.PI / 2],
+        [-5, middle() * height, 0], [width + 5, middle() * height, Math.PI],
+      ].map(([x, y, angle]) => ({ x, y, angle, counter: { value: 0 } }));
+      if (reducedMotion.matches) while (pending.length) this.grow();
+    },
+    grow() {
+      const next = [];
+      for (const { x, y, angle, counter } of pending) {
+        const nx = x + Math.cos(angle) * length;
+        const ny = y + Math.sin(angle) * length;
+        segments.push([x, y, nx, ny]);
+        counter.value++;
+        if (nx < -100 || nx > width + 100 || ny < -100 || ny > height + 100) continue;
+        const rate = counter.value <= 30 ? .8 : .5;
+        if (random() < rate) next.push({ x: nx, y: ny, angle: angle + random() * spread, counter });
+        if (random() < rate) next.push({ x: nx, y: ny, angle: angle - random() * spread, counter });
       }
-      ctx.lineTo(to + step, y0 + gap);
-      ctx.lineTo(from, y0 + gap);
-      ctx.closePath();
-      ctx.fill();
+      pending = next;
+    },
+    get done() { return !pending.length && drawn === segments.length; },
+    draw(full) {
+      if (full) { ctx.clearRect(0, 0, width, height); drawn = 0; }
+      else this.grow();
+      ctx.strokeStyle = lineColor;
+      ctx.lineWidth = 1;
       ctx.beginPath();
-      ys.forEach((y, index) => {
-        if (index) ctx.lineTo(from + index * step, y);
-        else ctx.moveTo(from, y);
-      });
+      for (; drawn < segments.length; drawn++) {
+        const [x, y, nx, ny] = segments[drawn];
+        ctx.moveTo(x, y);
+        ctx.lineTo(nx, ny);
+      }
       ctx.stroke();
+    },
+  };
+})();
+
+// A grid of dots whose size breathes with a slowly drifting noise field.
+const dots = {
+  fps: 15,
+  done: false,
+  reset() {},
+  draw(full, time = 0) {
+    ctx.clearRect(0, 0, width, height);
+    ctx.fillStyle = lineColor;
+    const spacing = 18;
+    const z = reducedMotion.matches ? 0 : time / 9000;
+    ctx.beginPath();
+    for (const [from, to] of regions()) {
+      for (let x = Math.ceil(from / spacing) * spacing; x < to; x += spacing) {
+        for (let y = spacing; y < height; y += spacing) {
+          const radius = .5 + Math.max(0, noise(x / 340, y / 340, z)) * 1.6;
+          ctx.moveTo(x + radius, y);
+          ctx.arc(x, y, radius, 0, Math.PI * 2);
+        }
+      }
     }
-  }
-}
+    ctx.fill();
+  },
+};
+
+// Topographic contours: marching squares over a slowly drifting noise field.
+const contours = {
+  fps: 10,
+  done: false,
+  reset() {},
+  draw(full, time = 0) {
+    ctx.clearRect(0, 0, width, height);
+    ctx.strokeStyle = lineColor;
+    ctx.lineWidth = .9;
+    const cell = 10;
+    const z = reducedMotion.matches ? 0 : time / 40000;
+    const field = (x, y) => noise(x / 420, y / 420, z) * .75 + noise(x / 160, y / 160, z + 9) * .25;
+    ctx.beginPath();
+    for (const [from, to] of regions()) {
+      const cols = Math.ceil((to - from) / cell) + 1;
+      const rows = Math.ceil(height / cell) + 1;
+      const values = new Float32Array(cols * rows);
+      for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) values[j * cols + i] = field(from + i * cell, j * cell);
+      for (let level = -.7; level <= .71; level += .14) {
+        for (let j = 0; j < rows - 1; j++) {
+          for (let i = 0; i < cols - 1; i++) {
+            const a = values[j * cols + i], b = values[j * cols + i + 1];
+            const c = values[(j + 1) * cols + i + 1], d = values[(j + 1) * cols + i];
+            const x = from + i * cell, y = j * cell;
+            const points = [];
+            if ((a < level) !== (b < level)) points.push([x + (level - a) / (b - a) * cell, y]);
+            if ((b < level) !== (c < level)) points.push([x + cell, y + (level - b) / (c - b) * cell]);
+            if ((d < level) !== (c < level)) points.push([x + (level - d) / (c - d) * cell, y + cell]);
+            if ((a < level) !== (d < level)) points.push([x, y + (level - a) / (d - a) * cell]);
+            for (let k = 0; k + 1 < points.length; k += 2) {
+              ctx.moveTo(points[k][0], points[k][1]);
+              ctx.lineTo(points[k + 1][0], points[k + 1][1]);
+            }
+          }
+        }
+      }
+    }
+    ctx.stroke();
+  },
+};
+
+const art = { plum, dots, contours }[artName] || plum;
 
 function frame(now) {
   frameId = 0;
-  if (document.hidden || reducedMotion.matches) return;
-  if (now - lastFrame >= 1000 / 15) {
+  if (document.hidden || reducedMotion.matches || art.done) return;
+  if (now - lastFrame >= 1000 / art.fps) {
     lastFrame = now;
-    draw(now);
+    art.draw(false, now);
   }
   frameId = requestAnimationFrame(frame);
 }
 
 function resume() {
-  if (!frameId && !document.hidden && !reducedMotion.matches) frameId = requestAnimationFrame(frame);
+  if (!frameId && !document.hidden && !reducedMotion.matches && !art.done) frameId = requestAnimationFrame(frame);
+}
+
+function readColor() {
+  lineColor = getComputedStyle(root).getPropertyValue('--ambient-line').trim() || lineColor;
 }
 
 function resize() {
@@ -120,8 +186,9 @@ function resize() {
   canvas.style.width = width + 'px';
   canvas.style.height = height + 'px';
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  readColors();
-  draw(lastFrame);
+  readColor();
+  art.reset();
+  art.draw(true, lastFrame);
   resume();
 }
 
@@ -132,7 +199,7 @@ document.addEventListener('visibilitychange', () => {
   else resume();
 });
 // Redraw with the new palette whenever the theme changes.
-new MutationObserver(() => { readColors(); draw(lastFrame); })
+new MutationObserver(() => { readColor(); art.draw(true, lastFrame); })
   .observe(root, { attributes: true, attributeFilter: ['data-theme'] });
 reducedMotion.addEventListener('change', resize);
 narrowScreen.addEventListener('change', resize);
