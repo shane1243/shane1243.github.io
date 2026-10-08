@@ -3,6 +3,8 @@ const holder = document.getElementById('ambient-background');
 const canvas = document.getElementById('ambient-canvas');
 const ctx = canvas.getContext('2d');
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+// Matches the styles.css breakpoint that hides the background on narrow screens.
+const narrowScreen = matchMedia('(max-width: 600px)');
 holder.dataset.art = 'contours';
 let width = 0;
 let height = 0;
@@ -38,7 +40,7 @@ function draw(time = 0) {
 
 function frame(now) {
   frameId = 0;
-  if (document.hidden || reducedMotion.matches) return;
+  if (document.hidden || reducedMotion.matches || narrowScreen.matches) return;
   if (now - lastFrame >= 1000 / 20) {
     lastFrame = now;
     draw(now);
@@ -47,7 +49,7 @@ function frame(now) {
 }
 
 function resume() {
-  if (!frameId && !document.hidden && !reducedMotion.matches) frameId = requestAnimationFrame(frame);
+  if (!frameId && !document.hidden && !reducedMotion.matches && !narrowScreen.matches) frameId = requestAnimationFrame(frame);
 }
 
 function resize() {
@@ -72,5 +74,6 @@ document.addEventListener('visibilitychange', () => {
   else resume();
 });
 reducedMotion.addEventListener('change', resize);
+narrowScreen.addEventListener('change', resize);
 addEventListener('pagehide', () => { cancelAnimationFrame(frameId); clearTimeout(resizeTimer); });
 addEventListener('pageshow', resume);
