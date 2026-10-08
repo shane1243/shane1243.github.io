@@ -24,7 +24,7 @@
     │                             # /writing/on-happiness/：现有中文文章
     ├── app.js                    # 界面翻译、元信息、日期、语言和主题切换
     ├── styles.css                # 全站样式、响应式布局、主题与入场动画
-    ├── background.js             # Canvas 环境背景（梅枝 / 等高线 / 点阵候选）与动画生命周期
+    ├── background.js             # Canvas 环境背景（多种候选，待选定）与动画生命周期
     ├── assets/fonts/
     │   ├── inter-latin.woff2      # 本地字体
     │   └── OFL.txt                # 字体许可
@@ -34,7 +34,7 @@
     │                             # 幸福文章的窗边茶杯插图（原图与窄屏版本）
     └── vendor/
         ├── antfu.LICENSE         # 已有样式和动效的来源许可
-        ├── simplex-noise.js       # 第三方噪声模块，background.js 用它生成等高线和点阵
+        ├── simplex-noise.js       # 第三方噪声模块，background.js 用它生成噪声图案
         └── simplex-noise.LICENSE
 ```
 

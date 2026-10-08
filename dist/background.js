@@ -155,7 +155,141 @@ const contours = {
   },
 };
 
-const art = { plum, dots, contours }[artName] || plum;
+// Streamlines traced through a slowly turning noise flow field.
+const flow = (() => {
+  let seeds = [];
+  return {
+    fps: 8,
+    done: false,
+    reset() {
+      const random = mulberry32(77);
+      seeds = Array.from({ length: Math.round(width * height / 3600) }, () => [random() * width, random() * height]);
+    },
+    draw(full, time = 0) {
+      ctx.clearRect(0, 0, width, height);
+      ctx.strokeStyle = lineColor;
+      ctx.lineWidth = .8;
+      const z = reducedMotion.matches ? 0 : time / 60000;
+      ctx.beginPath();
+      for (let [x, y] of seeds) {
+        ctx.moveTo(x, y);
+        for (let step = 0; step < 40; step++) {
+          const angle = noise(x / 380, y / 380, z) * Math.PI * 2;
+          x += Math.cos(angle) * 3;
+          y += Math.sin(angle) * 3;
+          ctx.lineTo(x, y);
+        }
+      }
+      ctx.stroke();
+    },
+  };
+})();
+
+// Drifting points joined by faint lines when they come close.
+const constellation = (() => {
+  let points = [];
+  const reach = 120;
+  return {
+    fps: 30,
+    done: false,
+    reset() {
+      const random = mulberry32(5);
+      points = Array.from({ length: Math.round(width * height / 9000) }, () => ({
+        x: random() * width, y: random() * height, vx: (random() - .5) * .25, vy: (random() - .5) * .25,
+      }));
+    },
+    draw(full) {
+      ctx.clearRect(0, 0, width, height);
+      if (!full && !reducedMotion.matches) {
+        for (const point of points) {
+          point.x = (point.x + point.vx + width) % width;
+          point.y = (point.y + point.vy + height) % height;
+        }
+      }
+      ctx.strokeStyle = lineColor;
+      ctx.fillStyle = lineColor;
+      ctx.lineWidth = .8;
+      for (let i = 0; i < points.length; i++) {
+        const a = points[i];
+        for (let j = i + 1; j < points.length; j++) {
+          const b = points[j];
+          const distance = Math.hypot(a.x - b.x, a.y - b.y);
+          if (distance > reach) continue;
+          ctx.globalAlpha = 1 - distance / reach;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      }
+      ctx.globalAlpha = 1;
+      ctx.beginPath();
+      for (const { x, y } of points) {
+        ctx.moveTo(x + 1.4, y);
+        ctx.arc(x, y, 1.4, 0, Math.PI * 2);
+      }
+      ctx.fill();
+    },
+  };
+})();
+
+// Static engineering graph paper: minor and major grid lines.
+const graph = {
+  fps: 1,
+  done: true,
+  reset() {},
+  draw() {
+    ctx.clearRect(0, 0, width, height);
+    ctx.strokeStyle = lineColor;
+    const cell = 16;
+    for (const [major, alpha, widthPx] of [[false, .45, .6], [true, 1, .8]]) {
+      ctx.globalAlpha = alpha;
+      ctx.lineWidth = widthPx;
+      ctx.beginPath();
+      for (let x = 0; x <= width; x += cell) {
+        if ((Math.round(x / cell) % 5 === 0) !== major) continue;
+        ctx.moveTo(Math.round(x) + .5, 0);
+        ctx.lineTo(Math.round(x) + .5, height);
+      }
+      for (let y = 0; y <= height; y += cell) {
+        if ((Math.round(y / cell) % 5 === 0) !== major) continue;
+        ctx.moveTo(0, Math.round(y) + .5);
+        ctx.lineTo(width, Math.round(y) + .5);
+      }
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  },
+};
+
+// Soft tinted glows drifting slowly behind the page.
+const aurora = {
+  fps: 15,
+  done: false,
+  reset() {},
+  draw(full, time = 0) {
+    ctx.clearRect(0, 0, width, height);
+    const dark = root.dataset.theme === 'dark';
+    const t = reducedMotion.matches ? 0 : time / 14000;
+    const size = Math.max(width, height);
+    const blobs = [
+      [.12, .25, [120, 170, 140]], [.88, .2, [130, 150, 210]],
+      [.8, .85, [190, 160, 210]], [.18, .8, [210, 190, 140]],
+    ];
+    blobs.forEach(([bx, by, [r, g, b]], index) => {
+      const x = (bx + Math.sin(t + index * 1.7) * .06) * width;
+      const y = (by + Math.cos(t * .8 + index * 2.3) * .06) * height;
+      const radius = size * .38;
+      const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+      gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${dark ? .16 : .22})`);
+      gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+    });
+  },
+};
+
+const art = { plum, dots, contours, flow, constellation, graph, aurora }[artName] || plum;
 
 function frame(now) {
   frameId = 0;
