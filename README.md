@@ -14,8 +14,9 @@ Article titles and text retain their original language when the interface langua
 
 ## Preview locally
 
+From the repository root:
+
 ```sh
-cd /Users/shane/Documents/personal-homepage
 python3 -m http.server 4173 --bind 127.0.0.1 --directory dist
 ```
 
