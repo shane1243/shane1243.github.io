@@ -20,8 +20,10 @@
     ├── index.html                # /：个人介绍、研究方向、最新文章、联系方式
     ├── writing/
     │   ├── index.html            # /writing/：按年份组织的文章列表
-    │   └── on-happiness/index.html
-    │                             # /writing/on-happiness/：现有中文文章
+    │   ├── on-happiness/index.html
+    │   │                         # /writing/on-happiness/：中文文章（带插图）
+    │   └── toward-the-light/index.html
+    │                             # /writing/toward-the-light/：中文文章《向光而生》
     ├── app.js                    # 界面翻译、元信息、日期、语言和主题切换
     ├── styles.css                # 全站样式、响应式布局、主题与入场动画
     ├── background.js             # Canvas 坐标纸网格背景（静态，随主题和尺寸重绘）
@@ -91,7 +93,7 @@ git diff --check
 
 按改动选择检查；修改共享 HTML、CSS 或 JavaScript 时覆盖全部现有页面：
 
-- 直接访问 `/`、`/writing/`、`/writing/on-happiness/`，检查 `zq.` 返回首页、列表到文章及文章返回列表。核对内部链接、锚点、字体、样式和脚本资源。
+- 直接访问 `/`、`/writing/`、`/writing/on-happiness/`、`/writing/toward-the-light/`，检查 `zq.` 返回首页、列表到文章及文章返回列表。核对内部链接、锚点、字体、样式和脚本资源。
 - 检查中英文、明暗主题及刷新后的偏好保持；界面和元信息正确变化，文章原文不变。主题切换可能异步提交，应等待 `data-theme` 达到目标状态再断言。
 - 在 1440px、390px 和 320px 宽度检查布局；确认无横向溢出、导航遮挡、文章标题或元信息异常换行，并查看浏览器控制台。
 - 涉及交互或动画时检查键盘导航、跳转正文、减少动态效果及无 JavaScript 的阅读体验。只做源码核对时明确说明，不能报告成浏览器实测。
