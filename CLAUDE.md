@@ -21,7 +21,7 @@
     ├── writing/
     │   ├── index.html            # /writing/：按年份组织的文章列表
     │   ├── on-happiness/index.html
-    │   │                         # /writing/on-happiness/：中文文章（带插图）
+    │   │                         # /writing/on-happiness/：中文文章
     │   └── toward-the-light/index.html
     │                             # /writing/toward-the-light/：中文文章《向光而生》
     ├── app.js                    # 界面翻译、元信息、日期、语言和主题切换
@@ -32,8 +32,11 @@
     │   └── OFL.txt                # 字体许可
     ├── assets/images/
     │   ├── happiness-quiet-moment.webp
-    │   └── happiness-quiet-moment-800.webp
-    │                             # 幸福文章的窗边茶杯插图（原图与窄屏版本）
+    │   ├── happiness-quiet-moment-800.webp
+    │   │                         # 幸福文章的窗边茶杯插图（原图与窄屏版本）
+    │   ├── toward-the-light-ginkgo-pine.webp
+    │   └── toward-the-light-ginkgo-pine-800.webp
+    │                             # 《向光而生》的银杏与松插图（原图与窄屏版本）
     └── vendor/
         ├── antfu.LICENSE         # 已有样式和动效的来源许可
         ├── simplex-noise.js       # 保留的第三方模块，当前背景未导入它
